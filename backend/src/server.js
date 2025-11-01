@@ -1,19 +1,29 @@
 import express from 'express';
 import {createServer} from 'http';
+import path from 'path';
 //---------Router Files-----------
 import authRoutes from './routes/auth.route.js';
-import messageRoute from './routes/message.route.js';
+import messageRoutes from './routes/message.route.js';
 
 import dotenv from 'dotenv';
 dotenv.config(); 
 
-const app = express(); 
+export const app = express(); 
+const __dirname = path.resolve();
 const server = createServer(app);
 
 
 //---------Routes--------------
 app.use("/api/auth", authRoutes);
-app.use("/api/messages", messageRoute);
+app.use("/api/messages", messageRoutes);
+// -- Make ready for the deployment
+if(process.env.NODE_ENV === "production"){
+   app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+   app.get("", (req, res)=> {
+      res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+   });
+}
 
 const port = process.env.PORT;
 const startServer = () =>{
