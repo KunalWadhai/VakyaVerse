@@ -2,7 +2,7 @@ import userModel from '../models/user.model.js'
 import bcrypt from 'bcrypt';
 import { generateToken } from '../lib/utils.js';
 
-export const signup = async () => {
+export const signup = async (req, res) => {
     try{
         let {fullname, email, password} = req.body;
 
@@ -59,9 +59,10 @@ export const signup = async () => {
 }
 
 export const login = async () => {
-
+   let {email, password} = req.body;
+   
 }
 
 export const logout = async () => {
-
+   cookies.clear();
 }
