@@ -3,6 +3,8 @@ import bcrypt from 'bcrypt';
 import { generateToken } from '../lib/utils.js';
 import { sendWelcomeEmail } from '../emails/emailHandlers.js';
 import 'dotenv/config'
+// instead of above 
+import {ENV} from '../lib/env.js'
 
 export const signup = async (req, res) => {
     try{
@@ -58,7 +60,7 @@ export const signup = async (req, res) => {
                 profilePic: newUser.profilePic
             });
             try{
-                await sendWelcomeEmail(newUser.email, newUser.fullname, process.env.CLIENT_URL);
+                await sendWelcomeEmail(newUser.email, newUser.fullname, ENV.CLIENT_URL);
             }catch(error){
                 console.log("Failed to send welcome email", error);
             }
@@ -97,7 +99,11 @@ export const login = async (req, res) => {
             });
         }else{
            generateToken(user._id, res);
-           res.redirect("/login"); 
+           res.status(200).json({
+              meesage: "User logged in successfully",
+              fullname: user.fullname,
+              email:user.email,
+           });
         }
    }catch(error){
         console.log("Error in login controller");
@@ -106,5 +112,6 @@ export const login = async (req, res) => {
 }
 
 export const logout = async (req, res) => {
-   
+   res.cookie("token", "", {maxAge:0});
+   res.status(200).json({message: "User logged out successfully"});
 }
