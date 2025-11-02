@@ -13,7 +13,9 @@ export const app = express();
 const __dirname = path.resolve();
 const server = createServer(app);
 
+// --- Middlewares-----
 app.use(express.json()); // for accessing req.body content that sent by user (fields)
+app.use(express.urlencoded({extended:true})); 
 
 
 //---------Routes--------------

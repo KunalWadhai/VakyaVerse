@@ -59,10 +59,35 @@ export const signup = async (req, res) => {
 }
 
 export const login = async () => {
-   let {email, password} = req.body;
-   
+   try{
+        let {email, password} = req.body;
+        if(!email || !password){
+            return res.status(400).json({
+                message: "All fields are required"
+            });
+        }
+
+        let user = await userModel.findOne({email: email});
+        if(!user){
+            return res.status(404).json({
+                message: "User not exists"
+            });
+        }
+        const isPasswordMatch = await bcrypt.compare(password, user.password);
+        if(!isPasswordMatch){
+            return res.status(400).json({
+                message: "Invalid Credentials"
+            });
+        }else{
+           generateToken(user._id, res);
+           res.redirect("/login"); 
+        }
+   }catch(error){
+        console.log("Error in login controller");
+        res.status(500).json({message: "Internal server error"});
+   } 
 }
 
 export const logout = async () => {
-   cookies.clear();
+   
 }
