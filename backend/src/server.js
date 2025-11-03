@@ -1,6 +1,7 @@
 import express from 'express';
 import {createServer} from 'http';
 import path from 'path';
+import cookieParser from 'cookie-parser';
 //---------Router Files-----------
 import authRoutes from './routes/auth.route.js';
 import messageRoutes from './routes/message.route.js';
@@ -17,7 +18,7 @@ const server = createServer(app);
 // --- Middlewares-----
 app.use(express.json()); // for accessing req.body content that sent by user (fields)
 app.use(express.urlencoded({extended:true})); 
-
+app.use(cookieParser()); // to parse the cookies.
 
 //---------Routes--------------
 app.use("/api/auth", authRoutes);
