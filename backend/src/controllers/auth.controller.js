@@ -5,6 +5,7 @@ import { sendWelcomeEmail } from '../emails/emailHandlers.js';
 import 'dotenv/config'
 // instead of above 
 import {ENV} from '../lib/env.js'
+import cloudinary from '../lib/cloudinary.js';
 
 export const signup = async (req, res) => {
     try{
@@ -114,4 +115,39 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
    res.cookie("token", "", {maxAge:0});
    res.status(200).json({message: "User logged out successfully"});
+}
+
+export const updateProfile = async (req, res) => {
+    try{
+        const {profilePic} = req.body;
+        console.log("Profile Picture",profilePic);
+        if(!profilePic){
+            return res.status(400).json({
+                message: "Profile pic is required"
+            });
+        }
+        const uploadResponse = await cloudinary.uploader.upload(profilePic);
+
+        const userId = req.user._id;
+
+        const updatedUser = await userModel.findByIdAndUpdate(userId,
+            {profilePic: uploadResponse.secure_url},
+            {new:true}
+        );
+
+        res.status(200).json({
+            message: "User profile picture updated", 
+            updatedUser,
+        });
+    }catch(error){
+        console.log("❌ Error in update profile route.");
+        res.status(500).json({message: "Internal server error ❌ "});
+    }
+}
+
+export const checkUserAuthenticated = async (req, res) => {
+    return res.status(200).json({
+        message: "User authenticated", 
+        user: req.user,
+    });
 }
