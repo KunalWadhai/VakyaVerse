@@ -31,14 +31,13 @@ app.use(compression());
 app.use(morgan("dev"));
 
 // -----------Rate Limiter
-const limiter = new rateLimit({
+const limiter = rateLimit({
    windowMs: 15 * 60 * 1000,
    max:100,
-   statusCode:429,
    message: "Too many requests from this IP, Please try after some time"
 });
 
-app.use("/api", limiter);
+app.use("/api/", limiter);
 
 //---------Routes--------------
 app.use("/api/auth", authRoutes);
@@ -54,12 +53,13 @@ app.get("/health", (req, res) => {
 });
 
 // 404 Handler
-app.get("*", (req,res) => {
+app.use((req,res) => {
    res.status(404).json({
       success: false,
       message:"Router Not Found"
-   })
+   });
 });
+
 
 // -- Make ready for the deployment
 if(ENV.NODE_ENV === "production"){
