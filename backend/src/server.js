@@ -14,7 +14,7 @@ import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 
 import dotenv from 'dotenv';
-import { uptime } from 'process';
+
 dotenv.config(); 
 
 export const app = express(); 
@@ -31,7 +31,7 @@ app.use(compression());
 app.use(morgan("dev"));
 
 // -----------Rate Limiter
-const limiter = new rateLimit({
+const limiter = rateLimit({
    windowMs: 15 * 60 * 1000,
    max:100,
    statusCode:429,
@@ -53,12 +53,12 @@ app.get("/health", (req, res) => {
    });
 });
 
-// 404 Handler
-app.get("*", (req,res) => {
-   res.status(404).json({
-      success: false,
-      message:"Router Not Found"
-   })
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ 
+    success: false,
+    message: 'Route not found' 
+  });
 });
 
 // -- Make ready for the deployment
