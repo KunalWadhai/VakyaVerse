@@ -11,7 +11,7 @@ import {ENV} from './lib/env.js'
 import morgan from 'morgan';
 import helmet from 'helmet';
 import compression from 'compression';
-import rateLimit from 'express-rate-limit';
+//import rateLimit from 'express-rate-limit';
 
 import dotenv from 'dotenv';
 
@@ -31,14 +31,14 @@ app.use(compression());
 app.use(morgan("dev"));
 
 // -----------Rate Limiter
-const limiter = rateLimit({
-   windowMs: 15 * 60 * 1000,
-   max:100,
-   statusCode:429,
-   message: "Too many requests from this IP, Please try after some time"
-});
+// const limiter = rateLimit({
+//    windowMs: 15 * 60 * 1000,
+//    max:100,
+//    statusCode:429,
+//    message: "Too many requests from this IP, Please try after some time"
+// });
 
-app.use("/api", limiter);
+//app.use("/api", limiter);
 
 //---------Routes--------------
 app.use("/api/auth", authRoutes);
