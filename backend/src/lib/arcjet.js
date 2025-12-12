@@ -1,5 +1,5 @@
 import arcjet, { shield, detectBot, slidingWindow } from '@arcjet/node'; // slidingWindow for the rate limitting over here.
-import {ENV} from '../lib/env.js';
+import {ENV} from './constants.js';
 
 export const aj = arcjet({
   // Get your site key from https://app.arcjet.com and set it as an environment
