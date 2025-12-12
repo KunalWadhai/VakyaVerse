@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import {ENV} from '../lib/env.js'
+import {ENV} from './constants.js'
 
 export const generateToken = (userId, res) => {
     if(!ENV.JWT_SECRET) throw new Error("JWT secret not configured");

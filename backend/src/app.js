@@ -5,8 +5,7 @@ import cookieParser from 'cookie-parser';
 //---------Router Files-----------
 import authRoutes from './routes/auth.route.js';
 import messageRoutes from './routes/message.route.js';
-import {connectDB} from './lib/db.js';
-import {ENV} from './lib/env.js'
+import {ENV} from './lib/constants.js'
 
 import morgan from 'morgan';
 import helmet from 'helmet';
@@ -41,8 +40,8 @@ app.use(morgan("dev"));
 //app.use("/api", limiter);
 
 //---------Routes--------------
-app.use("/api/auth", authRoutes);
-app.use("/api/messages", messageRoutes);
+app.use('/api/v1', authRoutes);
+app.use('/api/v1', messageRoutes);
 
 // Health Check
 app.get("/health", (req, res) => {
@@ -70,12 +69,4 @@ if(ENV.NODE_ENV === "production"){
    }); 
 }
 
-const port = ENV.PORT || 3000;
-const startServer = () =>{
-   server.listen(port, ()=> {
-      console.log(`🚀 Server running on port ${port}`);
-   });
-   connectDB();
-}
-
-startServer();
+export default app;
