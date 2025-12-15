@@ -1,9 +1,8 @@
 import userModel from '../models/user.model.js'
 import bcrypt from 'bcrypt';
 import { generateToken } from '../lib/utils.js';
-import { sendWelcomeEmail } from '../emails/emailHandlers.js';
-import 'dotenv/config'
-// instead of above 
+import { sendEmail } from '../emails/emailHandlers.js';
+import 'dotenv/config';
 import {ENV} from '../lib/constants.js'
 import cloudinary from '../lib/cloudinary.js';
 
@@ -48,27 +47,27 @@ export const signup = async (req, res) => {
             email, 
             password:hashedPassword
         });
-        if(newUser){
-            generateToken(newUser._id, res);
-            await newUser.save();
-            // const savedUser = await newUser.save();
-            // generateToken(savedUser._id, res);
 
-            res.status(201).json({
-                message: "User created successfully", 
-                fullname: newUser.fullname,
-                email: newUser.email,
-                profilePic: newUser.profilePic
-            });
-            try{
-                await sendWelcomeEmail(newUser.email, newUser.fullname, ENV.CLIENT_URL);
-            }catch(error){
-                console.log("Failed to send welcome email", error);
-            }
-        }else{
-            return res.status(400).json({message: "Invalid user data"});
+        console.log("New User Created : ", newUser);
+    
+        generateToken(newUser._id, res);
+         try{
+            await sendEmail({ toEmail: newUser.email, name: newUser.fullname, clientURL: ENV.CLIENT_URL });
+        }catch(error){
+                console.error("❌ Failed to send welcome email");
+                console.error("   Error details:", {
+                    code: error.code,
+                    message: error.message,
+                    command: error.command,
+                    response: error.response
+                });
         }
-        
+        res.status(201).json({
+            message: "User created successfully", 
+            fullname: newUser.fullname,
+            email: newUser.email,
+            profilePic: newUser.profilePic
+        });    
     }catch(error){
         console.log("Error in user signup controller: ", error);
         res.status(500).json({message: "Internal server error"});
