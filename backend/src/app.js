@@ -10,6 +10,7 @@ import {ENV} from './lib/constants.js'
 import morgan from 'morgan';
 import helmet from 'helmet';
 import compression from 'compression';
+import cors from 'cors';
 //import rateLimit from 'express-rate-limit';
 
 import dotenv from 'dotenv';
@@ -20,6 +21,11 @@ export const app = express();
 const __dirname = path.resolve();
 const server = createServer(app);
 
+
+app.use(cors({
+   origin:ENV.FRONTEND_URL || 'http://localhost:5173',
+   credentials: true
+}));
 // --- Middlewares-----
 app.use(express.json()); // for accessing req.body content that sent by user (fields)
 app.use(express.urlencoded({extended:true})); 
